@@ -1,0 +1,144 @@
+\documentclass[12pt]{article}
+
+% Packages
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{CSCE 423 -- Homework 1}
+\rhead{Due: February 5, 2026}
+\cfoot{\thepage}
+
+% Title information
+\title{CSCE 423: Algorithms and Complexity\\Homework 1}
+\author{Caleb List, Delaney Lawrence, Aiden Makovicka}
+\date{Due: February 5, 2026}
+
+\begin{document}
+
+\maketitle
+
+% Problem 1
+\section*{Problem 1}
+
+\subsection*{Algorithm}
+
+For this problem we will divide our algorithm into 3 steps which involve the use of median of medians or the \texttt{SELECT} algorithm. The steps will be:
+
+\begin{enumerate}
+    \item \texttt{SELECT}$(A, j) \rightarrow a$
+    \item \texttt{SELECT}$(A, k) \rightarrow b$
+    \item Simple comparison loop through list to find all $x \in A$ where
+    \[
+        a \le x \le b.
+    \]
+    This would be equivalent to $j \le \text{RANK}(x) \le k$.
+\end{enumerate}
+
+\subsection*{Analyzing Time Complexity}
+
+We have proven in class \texttt{SELECT} or median of medians is $O(n)$. Step three is a simple loop through all elements of $A$ so has a time complexity of $O(n)$. So,
+\[
+O(n) + O(n) + O(n)
+\]
+is our time complexity. Or,
+\[
+O(n).
+\]
+
+\subsection*{Proof of Correctness}
+
+Given how we know \texttt{SELECT} is correct:
+
+\begin{itemize}
+    \item \texttt{SELECT}$(A, j) \rightarrow a$ is the element of rank $j$
+    \item \texttt{SELECT}$(A, k) \rightarrow b$ is the element of rank $k$
+\end{itemize}
+
+If our algorithm outputs an element $x$, then $a \le x \le b$. So, there are at least $j$ elements $\le x$ and at most $k$ elements $\le x$. So,
+\[
+\text{RANK}(x) \in [j, k]
+\]
+and all output elements are correct.
+
+If element $x$ has $\text{rank}(x) \in [j, k]$, then $x$ is between the $j^{\text{th}}$ and $k^{\text{th}}$ smallest elements. So, $a \le x \le b$ and $x$ is an output. Therefore all correct elements are output.
+
+
+\vspace{1cm}
+
+% Problem 2
+\section*{Problem 2}
+
+[Your solution here]
+
+\vspace{1cm}
+
+% Problem 3
+\section*{Problem 3}
+
+[Your solution here]
+
+\vspace{1cm}
+
+% Problem 4
+\section*{Problem 4}
+
+\subsection*{Algorithm}
+
+This problem is always asking for the 19th element we will simply loop through $A$, of size $n$, 19 times. Steps are as follows:
+
+\begin{enumerate}
+    \item Check if array length $\ge 19$
+    \item Loop through array keeping track of smallest element
+    \item Put smallest element at index (iteration) $\rightarrow$ first case 0
+    \item Now loop from position 1 to $n-1$, finding smallest and swapping w/ position 1
+    \item Keep doing this for all 19 iterations
+    \item Return element $A[18]$
+\end{enumerate}
+
+We are partially sorting the array.
+
+\subsection*{Time Complexity}
+
+Total iterations is
+\[
+\sum_{i=0}^{18} (n - i - 1)
+\quad \text{or} \quad
+\sum_{i=1}^{19} (n - i)
+= 19n - 190
+\]
+
+So,
+\[
+T(n) = 19n - 190 \le 19n \le cn = O(n)
+\]
+
+\subsection*{Proof of Correctness}
+
+This algorithm is essentially the first 19 steps of selection sort. We have proved selection sort's correctness within class or prerequisites. Given this it has elements located at $A[i-1]$ where $i$ is the RANK of these elements.
+
+Therefore,
+
+Position $A[18]$ after our algorithm is the 19th element of $A$.
+
+\vspace{1cm}
+
+% Problem 5
+\section*{Problem 5}
+
+[Your solution here]
+
+\vspace{1cm}
+
+% Problem 6
+\section*{Problem 6 (Bonus)}
+
+[Your solution here]
+
+\end{document}
