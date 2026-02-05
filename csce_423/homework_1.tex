@@ -7,6 +7,8 @@
 \usepackage{amsthm}
 \usepackage{enumitem}
 \usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
 
 % Header and footer
 \pagestyle{fancy}
@@ -75,7 +77,49 @@ If element $x$ has $\text{rank}(x) \in [j, k]$, then $x$ is between the $j^{\tex
 % Problem 2
 \section*{Problem 2}
 
-[Your solution here]
+\subsection*{Algorithm Description}
+
+This problem is solved using a recursive selection algorithm. The algorithm compares the elements at index $\lfloor i/2 \rfloor$ in each sorted list. For the list containing the smaller of the two compared elements, all elements up to and including that element can be discarded, as none of them can be the $i$-th smallest overall. The algorithm then recursively calls \textsc{Select} on the resulting subproblem.
+
+\subsection*{Pseudocode}
+
+\begin{verbatim}
+Select(X, Y, i)
+    // base cases
+    if X is empty: return Y[i - 1]
+    if Y is empty: return X[i - 1]
+    if i == 1: return min(X[0], Y[0])
+
+    m = i // 2
+
+    if m <= |X|: x = X[m - 1] else x = infinity
+    if m <= |Y|: y = Y[m - 1] else y = infinity
+
+    if x <= y:
+        return Select(X[m:], Y, i - m)
+    else:
+        return Select(X, Y[m:], i - m)
+\end{verbatim}
+
+\subsection*{Time Complexity}
+
+At each recursive call, the algorithm compares the $\lfloor i/2 \rfloor$-th elements of the two sorted arrays and discards approximately $i/2$ elements from one of the arrays. Thus, the value of $i$ is reduced by about half at each step, while the work done per call is constant.
+
+\[
+T(i) = T(i/2) + O(1)
+\]
+
+Solving this recurrence gives:
+
+\[
+T(i) = O(\log i)
+\]
+
+Since $i \leq |X| + |Y|$, the overall time complexity is:
+
+\[
+T = O(\log(|X| + |Y|))
+\]
 
 \vspace{1cm}
 
@@ -172,7 +216,117 @@ Position $A[18]$ after our algorithm is the 19th element of $A$.
 % Problem 5
 \section*{Problem 5}
 
-[Your solution here]
+Consider the directed graph $G = (V,E)$ where
+\[
+V = \{s,a,b,c,d\}
+\]
+and
+\[
+E = \{(s,a), (s,b), (a,c), (a,d), (b,c), (b,d)\}.
+\]
+
+All edges have equal weight $1$. This graph is shown below.
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=2cm,
+    every node/.style={circle, draw, minimum size=8mm},
+    every edge/.style={draw, ->}
+]
+
+\node (s) {$s$};
+\node (a) [right=of s] {$a$};
+\node (c) [right=of a] {$c$};
+
+\node (b) [below=of s] {$b$};
+\node (d) [right=of b] {$d$};
+
+\draw (s) edge (a);
+\draw (s) edge (b);
+
+\draw (a) edge (c);
+\draw (a) edge (d);
+
+\draw (b) edge (c);
+\draw (b) edge (d);
+
+\end{tikzpicture}
+\end{center}
+
+\bigskip
+
+Now define the edge set
+\[
+E_p = \{(s,a), (s,b), (a,c), (b,d)\}.
+\]
+
+This subgraph is shown below.
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=2cm,
+    every node/.style={circle, draw, minimum size=8mm},
+    every edge/.style={draw, ->}
+]
+
+\node (s) {$s$};
+\node (a) [right=of s] {$a$};
+\node (c) [right=of a] {$c$};
+
+\node (b) [below=of s] {$b$};
+\node (d) [right=of b] {$d$};
+
+\draw (s) edge (a);
+\draw (s) edge (b);
+
+\draw (a) edge (c);
+\draw (b) edge (d);
+
+\end{tikzpicture}
+\end{center}
+
+\bigskip
+
+\subsection*{Requirement 1}
+
+Each path in $(V,E_p)$ from $s$ to any vertex $v$ is a shortest path in $G$.
+
+\medskip
+
+The shortest path distances in $G$ are:
+\begin{align*}
+d(s,a) &= 1 \quad \text{via } s \rightarrow a \\
+d(s,b) &= 1 \quad \text{via } s \rightarrow b \\
+d(s,c) &= 2 \quad \text{via } s \rightarrow a \rightarrow c \text{ or } s \rightarrow b \rightarrow c \\
+d(s,d) &= 2 \quad \text{via } s \rightarrow a \rightarrow d \text{ or } s \rightarrow b \rightarrow d
+\end{align*}
+
+In $(V,E_p)$, the paths $s \rightarrow a$ and $s \rightarrow b$ have length $1$, while the paths $s \rightarrow a \rightarrow c$ and $s \rightarrow b \rightarrow d$ have length $2$. These path lengths match the shortest path distances in $G$, so Requirement 1 is satisfied.
+
+\bigskip
+
+\subsection*{Requirement 2}
+
+The edge set $E_p$ cannot be produced by a breadth-first search.
+
+Breadth-first search uses a FIFO queue. The execution of this search will be:
+\begin{enumerate}
+    \item Vertex $s$ is dequeued first, and its neighbors $a$ and $b$ are enqueued.
+    \item Next, either $a$ or $b$ is dequeued.
+    \begin{itemize}
+        \item If $a$ is dequeued first, all of its outgoing edges are discovered, namely to $c$ and $d$. Vertex $a$ becomes the parent of both, resulting in the BFS tree
+        \[
+        \{(s,a), (s,b), (a,c), (a,d)\}.
+        \]
+        \item If $b$ is dequeued first, then $b$ becomes the parent of both $c$ and $d$, resulting in the BFS tree
+        \[
+        \{(s,a), (s,b), (b,c), (b,d)\}.
+        \]
+    \end{itemize}
+\end{enumerate}
+
+In either case, BFS assigns the same parent to both $c$ and $d$. Therefore, it is impossible for $a$ to be the parent of $c$ while $b$ is the parent of $d$, as in $E_p$. Hence, $E_p$ cannot result from a BFS traversal.
+
 
 \vspace{1cm}
 
@@ -189,3 +343,4 @@ This means that for the algorithm to be correct, it must have done enough compar
 
 
 \end{document}
+
