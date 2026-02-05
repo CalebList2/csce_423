@@ -81,8 +81,48 @@ If element $x$ has $\text{rank}(x) \in [j, k]$, then $x$ is between the $j^{\tex
 
 % Problem 3
 \section*{Problem 3}
+To find the maximum number of shortest paths, we can use a modified BFS approach since it naturally finds the shortest path distance.
 
-[Your solution here]
+\subsection*{Initialization}
+
+We initialize three arrays that loop through each vertex $v \in V$:
+\begin{itemize}
+    \item A distance array $dist[v] = \infty$ that stores the shortest distance from the source $s$.
+    \item A path array $paths[v] = 0$ that stores the number of shortest paths from $s$.
+    \item A Boolean array $visited[v] = \text{false}$ that stores whether or not the vertex has been visited.
+\end{itemize}
+
+Given the source $s$, we set $dist[s] = 0$ and $paths[s] = 1$. We then enqueue $s$ into a queue $Q$.
+
+\subsection*{BFS Traversal}
+
+While $Q$ is not empty, we dequeue a vertex $u$. For each neighboring vertex $v$ of $u$:
+
+\begin{enumerate}
+    \item If $v$ is undiscovered (i.e., $dist[v] = \infty$), we have found a shortest path to $v$. We set:
+    \[
+        dist[v] = dist[u] + 1
+    \]
+    \[
+        paths[v] = paths[u]
+    \]
+    We then enqueue $v$ into $Q$.
+    
+    \item If $v$ is discovered (i.e., $dist[v] \neq \infty$) and $dist[v] = dist[u] + 1$, this represents another valid shortest path to $v$ via $u$. We update:
+    \[
+        paths[v] = paths[v] + paths[u]
+    \]
+    
+    \item If $dist[v] < dist[u] + 1$, we do nothing.
+\end{enumerate}
+
+\subsection*{Finding the Maximum}
+
+Once the queue is empty, we iterate through the $paths$ array and return the vertex with the greatest path value.
+
+\subsection*{Time Complexity}
+
+All vertices are enqueued and dequeued once, and each edge is only explored once. Therefore, the time complexity is $O(V + E)$.
 
 \vspace{1cm}
 
@@ -139,6 +179,13 @@ Position $A[18]$ after our algorithm is the 19th element of $A$.
 % Problem 6
 \section*{Problem 6 (Bonus)}
 
-[Your solution here]
+We can use proof by contradiction to show that the algorithm will also find the $i - 1$ smaller and $n - i$ larger elements.
+
+We can let variable $y$ represent the $i$th smallest element returned by the algorithm. For $y$ to be the $i$th smallest, there has to be a set of $i - 1$ elements such that for all elements in the subset $a$, the element is less than $y$. There also has to be a set of exactly $n - i$ elements such that for all elements in the subset $b$, all elements are greater than $y$.
+
+Suppose the algorithm ends early and there is an element $w$ that is not equal to $y$, and the comparison between the two elements was not determined. Without the comparison, we could change the value of $w$ to be smaller or larger than $y$ without contradicting any comparisons. Changing the value of $w$ to be greater or less than $y$ will change the rank of $y$.
+
+This means that for the algorithm to be correct, it must have done enough comparisons to fix the rank of $y$ to be exactly $i$. This means that every element in the list has a relationship through direct comparison or the transitive property of $y$. This therefore proves that to know $y$ is the $i$th element in the list, we implicitly partition the elements into two sets, one that is less than $y$ and another greater than $y$. \qed
+
 
 \end{document}
