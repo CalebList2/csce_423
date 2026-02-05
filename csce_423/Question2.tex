@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+
+\section*{Question 2}
+
+\subsection*{Algorithm Description}
+
+This problem is solved using a recursive selection algorithm. The algorithm compares the elements at index $\lfloor i/2 \rfloor$ in each sorted list. For the list containing the smaller of the two compared elements, all elements up to and including that element can be discarded, as none of them can be the $i$-th smallest overall. The algorithm then recursively calls \textsc{Select} on the resulting subproblem.
+
+\subsection*{Pseudocode}
+
+\begin{verbatim}
+Select(X, Y, i)
+    // base cases
+    if X is empty: return Y[i - 1]
+    if Y is empty: return X[i - 1]
+    if i == 1: return min(X[0], Y[0])
+
+    m = i // 2
+
+    if m <= |X|: x = X[m - 1] else x = infinity
+    if m <= |Y|: y = Y[m - 1] else y = infinity
+
+    if x <= y:
+        return Select(X[m:], Y, i - m)
+    else:
+        return Select(X, Y[m:], i - m)
+\end{verbatim}
+
+\subsection*{Time Complexity}
+
+At each recursive call, the algorithm compares the $\lfloor i/2 \rfloor$-th elements of the two sorted arrays and discards approximately $i/2$ elements from one of the arrays. Thus, the value of $i$ is reduced by about half at each step, while the work done per call is constant.
+
+\[
+T(i) = T(i/2) + O(1)
+\]
+
+Solving this recurrence gives:
+
+\[
+T(i) = O(\log i)
+\]
+
+Since $i \leq |X| + |Y|$, the overall time complexity is:
+
+\[
+T = O(\log(|X| + |Y|))
+\]
+\end{document}
